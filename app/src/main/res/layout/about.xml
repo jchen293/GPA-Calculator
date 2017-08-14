@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".contact"
+    android:id="@+id/relative1"
+    android:background="#E0E0E0">
+
+
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="11dp"
+        android:text="back"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:text="App Developer: Junjie Chen. "
+        android:textColor="#000000"
+        android:layout_below="@+id/textView11"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="18dp" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version:1.0"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="This app is designed for students who are enroll in high school or college to help them calculate their GPA."
+        android:textSize="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/back" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView10"
+        android:layout_marginTop="16dp"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:text="Grading Scale: (A) = 4.0   (A-) = 3.667  (B+) = 3.334,   (B) = 3.0    (B-) = 2.667   (C+) = 2.334   (C) = 2.0    (C-) = 1.667     (D+) = 1.334    (D) = 1.0     (F) = 0.0 " />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:textSize="25dp"
+        android:text="Front UI and Designing: Junjie Chen"
+        android:layout_below="@+id/textView8"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>
