@@ -15,12 +15,18 @@ package io.github.httpsjchen293.simplegpacalculator;
         import java.text.DecimalFormat;
         import java.util.ArrayList;
         import java.util.List;
+        import com.google.android.gms.ads.AdRequest;
+        import com.google.android.gms.ads.AdView;
+        import com.google.android.gms.ads.MobileAds;
+        import com.google.android.gms.ads.reward.RewardItem;
+        import com.google.android.gms.ads.reward.RewardedVideoAd;
+        import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 /**
  * Created by Jack on 8/1/17.
  */
 
-public class HsGpa extends AppCompatActivity {
+public class HsGpa extends AppCompatActivity implements RewardedVideoAdListener{
 
     TextView semGpa, cumGpa;
     EditText edt1, edt2, preGpa, totalClass;
@@ -30,14 +36,72 @@ public class HsGpa extends AppCompatActivity {
 
     double grade11, type11, grade22, type22,grade33, type33, grade44, type44,grade55, type55, grade66, type66,grade77, type77, grade88, type88,grade99, type99, grade00, type00;
     int c1, c2,c3,c4,c5,c6,c7,c8,c9,c10;
+    float previousGPA, totalClassesTakne;
+    private RewardedVideoAd mRewardedVideoAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hsgpa);
 
+
+        MobileAds.initialize(this, "ca-app-pub-7155890232460555~5886927750");
+
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+        mRewardedVideoAd.loadAd("ca-app-pub-7155890232460555/3396334087", new AdRequest.Builder().build());
+
+
+        cal = (Button) findViewById(R.id.cal);
+
+        cal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cal.setEnabled(true);
+                if (mRewardedVideoAd.isLoaded()) {
+                    mRewardedVideoAd.show();
+                } else {
+
+                    if (!preGpa.getText().toString().isEmpty()) {
+                        previousGPA = Float.parseFloat(edt1.getText().toString());
+                    } else {
+                        previousGPA = 0;
+                    }
+                    if (!totalClass.getText().toString().isEmpty()) {
+                        totalClassesTakne = Float.parseFloat(edt2.getText().toString());
+                        ;
+                    } else {
+                        totalClassesTakne = 0;
+                    }
+                    double semesterGpa1 = grade11 + type11;
+                    double semesterGpa2 = grade22 + type22;
+                    double semesterGpa3 = grade33 + type33;
+                    double semesterGpa4 = grade44 + type44;
+                    double semesterGpa5 = grade55 + type55;
+                    double semesterGpa6 = grade66 + type66;
+                    double semesterGpa7 = grade77 + type77;
+                    double semesterGpa8 = grade88 + type88;
+                    double semesterGpa9 = grade99 + type99;
+                    double semesterGpa10 = grade00 + type00;
+                    double overall = previousGPA * totalClassesTakne;
+
+                    double overallGpa = roundThreeDecimals((overall + semesterGpa1 + semesterGpa2 + semesterGpa3 + semesterGpa4 + semesterGpa5 + semesterGpa6 + semesterGpa7 + semesterGpa8 + semesterGpa9 + semesterGpa10) / (totalClassesTakne + c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10));
+                    double gpa = roundThreeDecimals((semesterGpa1 + semesterGpa2 + semesterGpa3 + semesterGpa4 + semesterGpa5 + semesterGpa6 + semesterGpa7 + semesterGpa8 + semesterGpa9 + semesterGpa10) / (c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10));
+                    semGpa.setText("Overall GPA: " + overallGpa);
+                    cumGpa.setText("Term GPA: " + gpa);
+
+                }
+            }
+        });
+
+        AdView adView = (AdView)findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+
         edt1 = (EditText) findViewById(R.id.edt1);
         edt2 = (EditText) findViewById(R.id.edt2);
+
         preGpa = (EditText) findViewById(R.id.edt1);
         totalClass = (EditText) findViewById(R.id.edt2);
 
@@ -67,7 +131,6 @@ public class HsGpa extends AppCompatActivity {
         spinner9 = (Spinner) findViewById(R.id.type9);
         spinner10 = (Spinner) findViewById(R.id.type10);
 
-        cal = (Button) findViewById(R.id.cal);
         clear = (Button) findViewById(R.id.clear);
         back = (Button) findViewById(R.id.back);
 
@@ -110,41 +173,44 @@ public class HsGpa extends AppCompatActivity {
         typeOfClass.add("Honors");
         typeOfClass.add("AP");
 
-        cal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                float GPA = Float.parseFloat(edt1.getText().toString());
-                float classes = Float.parseFloat(edt2.getText().toString());
-
-                double semesterGpa1 = grade11 +type11;
-                double semesterGpa2 = grade22 +type22;
-                double semesterGpa3 = grade33 +type33;
-                double semesterGpa4 = grade44 +type44;
-                double semesterGpa5 = grade55 +type55;
-                double semesterGpa6 = grade66 +type66;
-                double semesterGpa7 = grade77 +type77;
-                double semesterGpa8 = grade88 +type88;
-                double semesterGpa9 = grade99 +type99;
-                double semesterGpa10 = grade00 +type00;
-                double overall = GPA*classes;
-
-
-                double overallGpa = roundThreeDecimals((overall+semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(classes+c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
-                double gpa = roundThreeDecimals((semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
-                semGpa.setText("Overall GPA: " +overallGpa);
-                cumGpa.setText("Term GPA: " + gpa);
-
-                if(overallGpa>=3.0){
-                    showToast2(view);
-                }else if(overallGpa>=2.0){
-                    showToast3(view);
-                }else if(overallGpa <2.0){
-                    showToast4(view);
-                }
-
-            }
-        });
+//        cal.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//
+//                double semesterGpa1 = grade11 +type11;
+//                double semesterGpa2 = grade22 +type22;
+//                double semesterGpa3 = grade33 +type33;
+//                double semesterGpa4 = grade44 +type44;
+//                double semesterGpa5 = grade55 +type55;
+//                double semesterGpa6 = grade66 +type66;
+//                double semesterGpa7 = grade77 +type77;
+//                double semesterGpa8 = grade88 +type88;
+//                double semesterGpa9 = grade99 +type99;
+//                double semesterGpa10 = grade00 +type00;
+//                double overall = previousGPA*totalClassesTakne;
+//
+//                previousGPA =0;
+//                totalClassesTakne =0;
+//                if(!preGpa.getText().toString().isEmpty()){
+//                    previousGPA = Float.parseFloat(edt1.getText().toString());
+//                }else{
+//                    previousGPA =0;
+//                }
+//                if(!totalClass.getText().toString().isEmpty()){
+//                    totalClassesTakne =Float.parseFloat(edt2.getText().toString());;
+//                }else{
+//                    totalClassesTakne = 0;
+//                }
+//
+//
+//                double overallGpa = roundThreeDecimals((overall+semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(totalClassesTakne+c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
+//                double gpa = roundThreeDecimals((semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
+//                semGpa.setText("Overall GPA: " +overallGpa);
+//                cumGpa.setText("Term GPA: " + gpa);
+//
+//            }
+//        });
 
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +221,6 @@ public class HsGpa extends AppCompatActivity {
                 cumGpa.setText("Term GPA:");
                 semGpa.setText("Overall GPA:");
            reset();
-           showToast(v);
             }
         });
 
@@ -971,27 +1036,132 @@ public class HsGpa extends AppCompatActivity {
         grade8.setAdapter(dataAdapters);
         grade9.setAdapter(dataAdapters);
         grade10.setAdapter(dataAdapters);
+
+
+        List<String> typeOfClass = new ArrayList<String>();
+        typeOfClass.add("");
+        typeOfClass.add("Regular");
+        typeOfClass.add("Honors");
+        typeOfClass.add("AP");
+
+        ArrayAdapter<String> types = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, typeOfClass);
+
+        // Drop down layout style - list view with radio button
+        types.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(types);
+        spinner2.setAdapter(types);
+        spinner3.setAdapter(types);
+        spinner4.setAdapter(types);
+        spinner5.setAdapter(types);
+        spinner6.setAdapter(types);
+        spinner7.setAdapter(types);
+        spinner8.setAdapter(types);
+        spinner9.setAdapter(types);
+        spinner10.setAdapter(types);
+        edt1.setText("");
+        edt2.setText("");
     }
 
     public double roundThreeDecimals(double d) {
         DecimalFormat twoDForm = new DecimalFormat("#.###");
         return Double.valueOf(twoDForm.format(d));
     }
-    public void showToast(View v){
 
-        Toast.makeText(this,"Data has been cleared", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onRewardedVideoAdLoaded() {
+
     }
-    public void showToast2(View v) {
 
-        Toast.makeText(this, "Good work. Your hard work has truly paid off.", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onRewardedVideoAdOpened() {
+       for(int i=0; i<3;i++) {
+           Toast.makeText(this, "Please watch this short advertisement, your GPA will be calculated after you watch this video, otherwise your GPA might not be calculated if you choose to exit during the video. Thank you for your support and patience!", Toast.LENGTH_LONG).show();
+       }
     }
-    public void showToast3(View v) {
 
-        Toast.makeText(this, "Not bad, keep up the good work.", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onRewardedVideoStarted() {
+        Toast.makeText(this, "Please watch this short advertisement, your GPA will be calculated after you watch this video, otherwise your GPA might not be calculated if you choose to exit during the video. Thank you for your support and patience!", Toast.LENGTH_LONG).show();
+
     }
-    public void showToast4(View v) {
 
-        Toast.makeText(this, "Fail! Work harder next time, good luck!.", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onRewardedVideoAdClosed() {
+//        double semesterGpa1 = grade11 +type11;
+//        double semesterGpa2 = grade22 +type22;
+//        double semesterGpa3 = grade33 +type33;
+//        double semesterGpa4 = grade44 +type44;
+//        double semesterGpa5 = grade55 +type55;
+//        double semesterGpa6 = grade66 +type66;
+//        double semesterGpa7 = grade77 +type77;
+//        double semesterGpa8 = grade88 +type88;
+//        double semesterGpa9 = grade99 +type99;
+//        double semesterGpa10 = grade00 +type00;
+//        double overall = previousGPA*totalClassesTakne;
+//
+//        previousGPA =0;
+//        totalClassesTakne =0;
+//        if(!preGpa.getText().toString().isEmpty()){
+//            previousGPA = Float.parseFloat(edt1.getText().toString());
+//        }else{
+//            previousGPA =0;
+//        }
+//        if(!totalClass.getText().toString().isEmpty()){
+//            totalClassesTakne =Float.parseFloat(edt2.getText().toString());;
+//        }else{
+//            totalClassesTakne = 0;
+//        }
+//
+//
+//        double overallGpa = roundThreeDecimals((overall+semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(totalClassesTakne+c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
+//        double gpa = roundThreeDecimals((semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
+//        semGpa.setText("Overall GPA: " +overallGpa);
+//        cumGpa.setText("Term GPA: " + gpa);
+
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        Toast.makeText(this, "Thank you for your support!", Toast.LENGTH_LONG).show();
+        double semesterGpa1 = grade11 +type11;
+        double semesterGpa2 = grade22 +type22;
+        double semesterGpa3 = grade33 +type33;
+        double semesterGpa4 = grade44 +type44;
+        double semesterGpa5 = grade55 +type55;
+        double semesterGpa6 = grade66 +type66;
+        double semesterGpa7 = grade77 +type77;
+        double semesterGpa8 = grade88 +type88;
+        double semesterGpa9 = grade99 +type99;
+        double semesterGpa10 = grade00 +type00;
+
+
+        if(!preGpa.getText().toString().isEmpty()){
+            previousGPA = Float.parseFloat(edt1.getText().toString());
+        }else{
+            previousGPA =0;
+        }
+        if(!totalClass.getText().toString().isEmpty()){
+            totalClassesTakne =Float.parseFloat(edt2.getText().toString());;
+        }else{
+            totalClassesTakne = 0;
+        }
+        double overall = previousGPA*totalClassesTakne;
+
+        double overallGpa = roundThreeDecimals((overall+semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(totalClassesTakne+c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
+        double gpa = roundThreeDecimals((semesterGpa1+semesterGpa2+semesterGpa3+semesterGpa4+semesterGpa5+semesterGpa6+semesterGpa7+semesterGpa8+semesterGpa9+semesterGpa10)/(c1+c2+c3+c4+c5+c6+c7+c8+c9+c10));
+        semGpa.setText("Overall GPA: " +overallGpa);
+        cumGpa.setText("Term GPA: " + gpa);
+
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+
     }
 }
 
